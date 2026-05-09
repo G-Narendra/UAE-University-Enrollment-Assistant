@@ -11,7 +11,7 @@ from src.agents.enrollment_agent import EnrollmentAgent
 
 
 @st.cache_resource
-def get_agent_v2():
+def get_agent_v3():
     return EnrollmentAgent()
 
 
@@ -26,7 +26,7 @@ def main():
     st.markdown("*AI Agent powered by Google Gemini — Ask anything about UAE university applications*")
     st.divider()
 
-    agent = get_agent_v2()
+    agent = get_agent_v3()
 
     # Sidebar
     with st.sidebar:

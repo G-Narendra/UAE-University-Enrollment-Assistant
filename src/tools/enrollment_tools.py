@@ -3,37 +3,53 @@ import os
 from typing import Dict, Any, Optional
 
 
-# Load database once at module level
 _DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "universities_db.json")
-with open(_DB_PATH, "r") as f:
-    UNIVERSITIES_DB = json.load(f)
+
+
+def _load_db() -> Dict:
+    """Load universities DB fresh from disk each time (avoids stale module-level cache)."""
+    with open(_DB_PATH, "r") as f:
+        return json.load(f)
 
 
 def get_university_requirements(university_code: str, program: str) -> Dict[str, Any]:
-    """
-    Fetch admission requirements for a specific university and program.
-    Args:
-        university_code: e.g. "UAEU", "AUS", "HCT", "Khalifa"
-        program: e.g. "Computer Science", "Medicine"
-    Returns:
-        Dict with requirements or error message
-    """
+    """Fetch admission requirements for a specific university and program."""
+    db = _load_db()
     uni_code = university_code.upper().strip()
-    uni = UNIVERSITIES_DB.get(uni_code)
+    uni = db.get(uni_code)
     if not uni:
-        available = list(UNIVERSITIES_DB.keys())
-        return {"error": f"University '{university_code}' not found.", "available_universities": available}
+        return {"error": f"University '{university_code}' not found.", "available_universities": list(db.keys())}
 
+    # 1. Exact case-insensitive match
     prog_data = None
-    # Case-insensitive program match
+    query = program.lower().strip()
     for prog_name, prog_info in uni["programs"].items():
-        if prog_name.lower() == program.lower().strip():
+        if prog_name.lower() == query:
             prog_data = (prog_name, prog_info)
             break
 
+    # 2. Substring / fuzzy match (handles "CS" -> "Computer Science", "Computer" -> "Computer Engineering")
     if not prog_data:
-        available_programs = list(uni["programs"].keys())
-        return {"error": f"Program '{program}' not found at {uni['name']}.", "available_programs": available_programs}
+        for prog_name, prog_info in uni["programs"].items():
+            prog_lower = prog_name.lower()
+            if query in prog_lower or prog_lower in query:
+                prog_data = (prog_name, prog_info)
+                break
+
+    # 3. Word-overlap match
+    if not prog_data:
+        query_words = set(query.split())
+        best_score, best_match = 0, None
+        for prog_name, prog_info in uni["programs"].items():
+            overlap = len(query_words & set(prog_name.lower().split()))
+            if overlap > best_score:
+                best_score, best_match = overlap, (prog_name, prog_info)
+        if best_match and best_score > 0:
+            prog_data = best_match
+
+    if not prog_data:
+        return {"error": f"No close match for '{program}' at {uni['name']}.",
+                "available_programs": list(uni["programs"].keys())}
 
     prog_name, info = prog_data
     return {
@@ -48,15 +64,12 @@ def get_university_requirements(university_code: str, program: str) -> Dict[str,
 
 def list_all_universities() -> Dict[str, Any]:
     """List all universities and their available programs."""
-    result = {}
-    for code, uni in UNIVERSITIES_DB.items():
-        result[code] = {
-            "name": uni["name"],
-            "location": uni["location"],
-            "programs": list(uni["programs"].keys()),
-            "website": uni["website"]
-        }
-    return result
+    db = _load_db()
+    return {
+        code: {"name": uni["name"], "location": uni["location"],
+               "programs": list(uni["programs"].keys()), "website": uni["website"]}
+        for code, uni in db.items()
+    }
 
 
 def check_eligibility(
