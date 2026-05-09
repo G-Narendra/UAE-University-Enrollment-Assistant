@@ -1,0 +1,161 @@
+{
+  "UAEU": {
+    "name": "United Arab Emirates University",
+    "location": "Al Ain",
+    "programs": {
+      "Computer Science": {
+        "min_gpa": 3.0,
+        "emsat_math": 1250,
+        "emsat_english": 1100,
+        "sat_math": 600,
+        "seats": 120,
+        "duration_years": 4,
+        "tuition_uae_gccc": 21000,
+        "tuition_international": 43000
+      },
+      "Medicine": {
+        "min_gpa": 3.7,
+        "emsat_math": 1400,
+        "emsat_english": 1250,
+        "emsat_biology": 1400,
+        "emsat_chemistry": 1400,
+        "seats": 60,
+        "duration_years": 6,
+        "tuition_uae_gcc": 33000,
+        "tuition_international": 65000
+      },
+      "Business Administration": {
+        "min_gpa": 2.8,
+        "emsat_math": 1100,
+        "emsat_english": 1100,
+        "seats": 150,
+        "duration_years": 4,
+        "tuition_uae_gcc": 18000,
+        "tuition_international": 38000
+      },
+      "Engineering": {
+        "min_gpa": 3.2,
+        "emsat_math": 1350,
+        "emsat_english": 1100,
+        "seats": 100,
+        "duration_years": 4,
+        "tuition_uae_gcc": 22000,
+        "tuition_international": 45000
+      }
+    },
+    "application_deadlines": {
+      "fall_2025": "2025-06-15",
+      "spring_2026": "2025-11-30"
+    },
+    "website": "https://www.uaeu.ac.ae"
+  },
+  "AUS": {
+    "name": "American University of Sharjah",
+    "location": "Sharjah",
+    "programs": {
+      "Computer Science": {
+        "min_gpa": 3.0,
+        "emsat_math": 1200,
+        "emsat_english": 1100,
+        "sat_total": 1100,
+        "seats": 80,
+        "duration_years": 4,
+        "tuition_uae_gcc": 48000,
+        "tuition_international": 52000
+      },
+      "Architecture": {
+        "min_gpa": 3.3,
+        "emsat_math": 1200,
+        "emsat_english": 1150,
+        "portfolio_required": true,
+        "seats": 40,
+        "duration_years": 5,
+        "tuition_uae_gcc": 52000,
+        "tuition_international": 56000
+      },
+      "Business Administration": {
+        "min_gpa": 2.8,
+        "emsat_math": 1050,
+        "emsat_english": 1100,
+        "seats": 120,
+        "duration_years": 4,
+        "tuition_uae_gcc": 44000,
+        "tuition_international": 48000
+      }
+    },
+    "application_deadlines": {
+      "fall_2025": "2025-05-30",
+      "spring_2026": "2025-10-31"
+    },
+    "website": "https://www.aus.edu"
+  },
+  "HCT": {
+    "name": "Higher Colleges of Technology",
+    "location": "Multiple Campuses",
+    "programs": {
+      "Information Technology": {
+        "min_gpa": 2.5,
+        "emsat_math": 900,
+        "emsat_english": 950,
+        "seats": 200,
+        "duration_years": 4,
+        "tuition_uae_gcc": 0,
+        "tuition_international": 25000,
+        "uae_nationals_only": false
+      },
+      "Business": {
+        "min_gpa": 2.3,
+        "emsat_math": 850,
+        "emsat_english": 900,
+        "seats": 250,
+        "duration_years": 4,
+        "tuition_uae_gcc": 0,
+        "tuition_international": 22000
+      },
+      "Engineering Technology": {
+        "min_gpa": 2.7,
+        "emsat_math": 1000,
+        "emsat_english": 900,
+        "seats": 150,
+        "duration_years": 4,
+        "tuition_uae_gcc": 0,
+        "tuition_international": 27000
+      }
+    },
+    "application_deadlines": {
+      "fall_2025": "2025-04-30",
+      "spring_2026": "2025-09-30"
+    },
+    "website": "https://www.hct.ac.ae"
+  },
+  "Khalifa": {
+    "name": "Khalifa University",
+    "location": "Abu Dhabi",
+    "programs": {
+      "Computer Engineering": {
+        "min_gpa": 3.5,
+        "emsat_math": 1500,
+        "emsat_english": 1200,
+        "sat_math": 700,
+        "seats": 50,
+        "duration_years": 4,
+        "tuition_uae_gcc": 11628,
+        "tuition_international": 48000
+      },
+      "Aerospace Engineering": {
+        "min_gpa": 3.5,
+        "emsat_math": 1500,
+        "emsat_english": 1200,
+        "seats": 30,
+        "duration_years": 4,
+        "tuition_uae_gcc": 11628,
+        "tuition_international": 48000
+      }
+    },
+    "application_deadlines": {
+      "fall_2025": "2025-03-31",
+      "spring_2026": "2025-09-15"
+    },
+    "website": "https://www.ku.ac.ae"
+  }
+}
