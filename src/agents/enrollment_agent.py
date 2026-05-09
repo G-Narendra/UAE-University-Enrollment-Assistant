@@ -26,13 +26,13 @@ from src.tools.enrollment_tools import (
 
 @tool
 def tool_list_universities() -> str:
-    """List all available UAE universities and their programs."""
+    """List all available UAE universities, their locations, programs, and websites. Use this when a student asks which universities are available, wants a comparison overview, or asks about 'top' universities."""
     return json.dumps(list_all_universities(), indent=2)
 
 
 @tool
 def tool_get_requirements(university_code: str, program: str) -> str:
-    """Get admission requirements for a specific UAE university and program. University codes: UAEU, AUS, HCT, Khalifa."""
+    """Get detailed admission requirements (GPA, EmSAT scores, deadlines, tuition) for a specific university and program. University codes: UAEU, AUS, HCT, Khalifa. Program examples: 'Computer Science', 'Medicine', 'Business Administration', 'Engineering', 'Computer Engineering'."""
     return json.dumps(get_university_requirements(university_code, program), indent=2)
 
 
@@ -48,23 +48,23 @@ def tool_check_eligibility(
     sat_math: int = 0,
     sat_total: int = 0
 ) -> str:
-    """Check if a student is eligible for admission. Provide student GPA, test scores, and target university/program."""
+    """Check if a student meets admission requirements. Pass the student's GPA and any test scores they mentioned. For scores not mentioned by the student, pass 0. University codes: UAEU, AUS, HCT, Khalifa. This will show which requirements are met and which are missing."""
     return json.dumps(check_eligibility(
         student_gpa=student_gpa,
-        emsat_math=emsat_math or None,
-        emsat_english=emsat_english or None,
+        emsat_math=emsat_math if emsat_math > 0 else None,
+        emsat_english=emsat_english if emsat_english > 0 else None,
         university_code=university_code,
         program=program,
-        emsat_biology=emsat_biology or None,
-        emsat_chemistry=emsat_chemistry or None,
-        sat_math=sat_math or None,
-        sat_total=sat_total or None
+        emsat_biology=emsat_biology if emsat_biology > 0 else None,
+        emsat_chemistry=emsat_chemistry if emsat_chemistry > 0 else None,
+        sat_math=sat_math if sat_math > 0 else None,
+        sat_total=sat_total if sat_total > 0 else None
     ), indent=2)
 
 
 @tool
 def tool_get_document_checklist(nationality: str, university_code: str, program: str) -> str:
-    """Get the required documents checklist. Nationality must be: uae_national, gcc_national, or international."""
+    """Get the complete required documents checklist for a student. Nationality options: 'uae_national' (for UAE citizens), 'gcc_national' (for Saudi/Qatar/Kuwait/Oman/Bahrain nationals), 'international' (for all other countries including India, Pakistan, UK, US, etc.). Always call this when a student mentions their nationality."""
     return json.dumps(get_document_checklist(nationality, university_code, program), indent=2)
 
 
@@ -91,24 +91,35 @@ TOOLS = [
 
 TOOL_MAP = {t.name: t for t in TOOLS}
 
-SYSTEM_PROMPT = """You are an expert UAE University Enrollment Assistant. You help students navigate the complex UAE university application process.
+SYSTEM_PROMPT = """You are an expert UAE University Enrollment Assistant. You ALWAYS use your tools to get accurate data before answering. NEVER refuse a request — always try your best with available tools.
 
-You have access to the following tools:
-- tool_list_universities: List all available universities and programs
-- tool_get_requirements: Get admission requirements for a specific university + program
-- tool_check_eligibility: Check if a student meets admission requirements
-- tool_get_document_checklist: Get required documents based on nationality
-- tool_get_emsat_info: Get EmSAT exam schedules and details
-- tool_calculate_gpa: Convert grades from other systems to UAE 4.0 GPA
+UNIVERSITIES you know about:
+- UAEU (United Arab Emirates University, Al Ain)
+- AUS (American University of Sharjah)
+- HCT (Higher Colleges of Technology)
+- Khalifa (Khalifa University, Abu Dhabi)
 
-INSTRUCTIONS:
-1. Understand what the student needs (application guidance, eligibility check, document list, etc.)
-2. Use tools proactively to get accurate data — never guess requirements
-3. After checking eligibility, always provide a clear action plan with numbered steps
-4. If a student is not eligible, explain exactly what they need to improve
-5. Always mention application deadlines
-6. Be encouraging, professional, and specific
-7. End with: "Is there anything else you'd like to know about your application?"
+CRITICAL RULES:
+1. ALWAYS call the appropriate tool before answering — never guess from memory.
+2. When a student asks about eligibility: call tool_check_eligibility with whatever scores they provide. If a score isn't mentioned, pass 0 for it.
+3. When a student says their nationality (India = international, Pakistan = international, UAE = uae_national, Saudi/Qatar/Kuwait/Bahrain/Oman = gcc_national): immediately call tool_get_document_checklist and show the full checklist.
+4. For comparisons: call tool_get_requirements for EACH university separately and compare them side-by-side.
+5. For "top universities" or rankings: list all universities with their strengths from the data — don't refuse.
+6. For application guidance: after checking eligibility, ALWAYS provide a numbered step-by-step action plan including deadlines.
+7. If a student wants to "apply": guide them through all steps (eligibility → documents → EmSAT → deadline).
+8. Be warm, encouraging, and thorough. Students are nervous — help them confidently.
+
+WHEN STUDENT PROVIDES NATIONALITY AFTER A UNIVERSITY/PROGRAM:
+→ Immediately call tool_get_document_checklist with the right nationality code and show the complete list.
+   - India/Pakistan/UK/US/etc. → "international"
+   - UAE → "uae_national"
+   - Saudi/Qatar/Kuwait/Oman/Bahrain → "gcc_national"
+
+ALWAYS end with a clear action plan when enough info is available. Format it as:
+**Your Action Plan:**
+1. Step 1...
+2. Step 2...
+3. Step 3...
 """
 
 
@@ -130,13 +141,13 @@ class EnrollmentAgent:
 
         messages = [SystemMessage(content=SYSTEM_PROMPT)] + self.conversation_history
 
-        # ReAct loop: up to 5 tool calls
-        for _ in range(5):
+        # ReAct loop: up to 8 tool calls to handle complex multi-step queries
+        response = None
+        for _ in range(8):
             response = self.llm_with_tools.invoke(messages)
             messages.append(response)
 
             if not response.tool_calls:
-                # Final answer — no more tool calls
                 break
 
             # Execute tool calls
@@ -152,6 +163,7 @@ class EnrollmentAgent:
 
                 messages.append(ToolMessage(content=str(result), tool_call_id=tc["id"]))
 
-        final_answer = response.content
+        final_answer = response.content if response else "I encountered an error. Please try again."
         self.conversation_history.append(AIMessage(content=final_answer))
         return final_answer
+

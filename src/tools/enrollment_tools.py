@@ -92,20 +92,22 @@ def check_eligibility(
     # EmSAT Math
     if "emsat_math" in reqs:
         req_val = reqs["emsat_math"]
-        if emsat_math and emsat_math >= req_val:
+        if emsat_math is None:
+            missing.append(f"EmSAT Math: Not yet provided — minimum required is {req_val}")
+        elif emsat_math >= req_val:
             met.append(f"EmSAT Math {emsat_math} meets minimum {req_val}")
         else:
-            current = emsat_math or "not provided"
-            missing.append(f"EmSAT Math: You have {current}, need {req_val}")
+            missing.append(f"EmSAT Math: You have {emsat_math}, need {req_val} (need {req_val - emsat_math} more points)")
 
     # EmSAT English
     if "emsat_english" in reqs:
         req_val = reqs["emsat_english"]
-        if emsat_english and emsat_english >= req_val:
+        if emsat_english is None:
+            missing.append(f"EmSAT English: Not yet provided — minimum required is {req_val}")
+        elif emsat_english >= req_val:
             met.append(f"EmSAT English {emsat_english} meets minimum {req_val}")
         else:
-            current = emsat_english or "not provided"
-            missing.append(f"EmSAT English: You have {current}, need {req_val}")
+            missing.append(f"EmSAT English: You have {emsat_english}, need {req_val} (need {req_val - emsat_english} more points)")
 
     # EmSAT Biology / Chemistry (for Medicine)
     for subj, score in [("emsat_biology", emsat_biology), ("emsat_chemistry", emsat_chemistry)]:
