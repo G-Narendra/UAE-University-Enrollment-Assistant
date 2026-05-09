@@ -223,10 +223,10 @@ def get_emsat_info(subject: Optional[str] = None) -> Dict[str, Any]:
             "Biology": {"code": "EMSAT-B", "max_score": 2000}
         },
         "upcoming_test_dates": [
-            {"date": "2025-06-10", "registration_deadline": "2025-05-25", "format": "Computer-based"},
-            {"date": "2025-08-15", "registration_deadline": "2025-07-31", "format": "Computer-based"},
-            {"date": "2025-10-20", "registration_deadline": "2025-10-05", "format": "Computer-based"},
-            {"date": "2026-01-12", "registration_deadline": "2025-12-28", "format": "Computer-based"}
+            {"date": "2026-06-08", "registration_deadline": "2026-05-25", "format": "Computer-based"},
+            {"date": "2026-08-10", "registration_deadline": "2026-07-28", "format": "Computer-based"},
+            {"date": "2026-10-19", "registration_deadline": "2026-10-05", "format": "Computer-based"},
+            {"date": "2027-01-11", "registration_deadline": "2026-12-28", "format": "Computer-based"}
         ],
         "fee": "AED 150 per subject",
         "validity": "2 years from test date",

@@ -44,8 +44,8 @@
       }
     },
     "application_deadlines": {
-      "fall_2025": "2025-06-15",
-      "spring_2026": "2025-11-30"
+      "fall_2026": "2026-06-15",
+      "spring_2027": "2026-11-30"
     },
     "website": "https://www.uaeu.ac.ae"
   },
@@ -84,8 +84,8 @@
       }
     },
     "application_deadlines": {
-      "fall_2025": "2025-05-30",
-      "spring_2026": "2025-10-31"
+      "fall_2026": "2026-07-31",
+      "spring_2027": "2026-11-30"
     },
     "website": "https://www.aus.edu"
   },
@@ -123,8 +123,8 @@
       }
     },
     "application_deadlines": {
-      "fall_2025": "2025-04-30",
-      "spring_2026": "2025-09-30"
+      "fall_2026": "2026-05-31",
+      "spring_2027": "2026-10-31"
     },
     "website": "https://www.hct.ac.ae"
   },
@@ -153,8 +153,8 @@
       }
     },
     "application_deadlines": {
-      "fall_2025": "2025-03-31",
-      "spring_2026": "2025-09-15"
+      "fall_2026": "2026-04-30",
+      "spring_2027": "2026-10-15"
     },
     "website": "https://www.ku.ac.ae"
   }
