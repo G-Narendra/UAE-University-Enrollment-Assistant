@@ -96,5 +96,14 @@ Tested against 10 representative student queries using a Model-as-a-Judge approa
 └── .env.example
 ```
 
+## Engineering Decisions & Challenges Solved
+
+| Challenge | Decision | Why |
+|---|---|---|
+| University requirements change each semester and differ by program | Requirements loaded from structured JSON, not hardcoded in prompts | Maintenance is update-the-file, not rewrite-the-prompt — a semester change is a data edit, not a code change |
+| Students ask vague questions ("Am I eligible?") without specifying university or program | Supervisor agent extracts intent and missing parameters, then routes to the right tools | The agent never guesses — it asks for what it needs or infers from context before calling tools |
+| GPA calculation differs by curriculum (American vs British vs Indian systems) | Dedicated calculator tool with explicit curriculum parameter and validation | Mixing GPA systems produces wrong eligibility decisions — the tool enforces consistency |
+| Tool calling errors from the LLM (wrong arguments, hallucinated tool names) | Strict tool map with validation + prompt rules requiring tool calls before answering | The prompt explicitly forbids answering from memory alone — every eligibility claim must come from a tool |
+
 ## ⚠️ Disclaimer
 This assistant uses a curated knowledge base for guidance purposes. Always verify requirements directly with the university before submitting your application.
