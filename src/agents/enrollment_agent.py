@@ -1,7 +1,28 @@
 import json
 import os
+import re
 import sys
 from typing import Any
+
+
+# ── AI Safety: Prompt Injection Defense ──────────────────────────────────────
+_INJECTION_PATTERNS = [
+    re.compile(r"ignore\s+(all\s+)?previous\s+instructions?", re.IGNORECASE),
+    re.compile(r"disregard\s+(all\s+)?(prior|previous|above)\s+instructions?", re.IGNORECASE),
+    re.compile(r"you\s+are\s+now\s+", re.IGNORECASE),
+    re.compile(r"act\s+as\s+(if\s+)?(you\s+are\s+)?", re.IGNORECASE),
+    re.compile(r"system\s*prompt\s*:\s*", re.IGNORECASE),
+]
+
+
+def sanitize_input(text: str, max_length: int = 50000) -> str:
+    """Strip prompt injection patterns and enforce length limits."""
+    if not text:
+        return text
+    text = text[:max_length]
+    for pattern in _INJECTION_PATTERNS:
+        text = pattern.sub("[REDACTED]", text)
+    return text
 
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -130,6 +151,8 @@ class EnrollmentAgent:
 
     def chat(self, user_message: str) -> str:
         """Process a user message through the ReAct agent loop."""
+        # AI Safety: sanitize user input before passing to agent
+        user_message = sanitize_input(user_message)
         self.conversation_history.append(HumanMessage(content=user_message))
 
         messages = [SystemMessage(content=SYSTEM_PROMPT)] + self.conversation_history
