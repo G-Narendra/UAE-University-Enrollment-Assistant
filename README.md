@@ -1,7 +1,9 @@
 # Project Title: UAE University Enrollment Assistant
 
 ## 🎯 Problem Statement
-Students applying to UAE universities face complex enrollment processes involving admission requirements, GPA conversions, document verification, and EmSAT scheduling across multiple institutions. This AI Agent automates the entire advisory workflow — replacing hours of manual research with a 30-second conversation.
+Students applying to UAE universities face complex enrollment processes involving admission requirements, GPA conversions, document verification, and EmSAT scheduling across multiple institutions. Each university (UAEU, AUS, HCT, Khalifa) has different requirements, and the information is scattered across websites, PDFs, and admissions offices. A student asking "Am I eligible for Computer Science at UAEU with a 3.2 GPA?" must manually check eligibility criteria, convert their GPA to the UAEU scale, verify document requirements for their nationality, and confirm EmSAT score thresholds — a process that takes hours.
+
+I chose a ReAct Agent with tool-calling over a simple Q&A chatbot because eligibility determination requires multi-step reasoning: the agent must first determine which university the student is asking about, then call the eligibility checker with their specific parameters, then call the document checklist tool with their nationality, and finally synthesize a coherent response. Each tool is validated against a strict JSON schema — if the LLM generates malformed tool arguments, the system catches the error and feeds it back as a system message for self-correction. The agent never guesses eligibility from memory; every claim must come from a tool call, enforced by the system prompt. This prevents the common failure mode where chatbots confidently state incorrect admission requirements.
 
 ## 🏗️ Architecture
 
